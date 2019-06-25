@@ -27,6 +27,7 @@ function inventory() {
             console.table(res);
             //npm package neatly displays response object from database as a readable table
         };
+        promptCustomer();
     });
 };
 
