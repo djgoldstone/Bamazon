@@ -29,3 +29,20 @@ function inventory() {
         };
     });
 };
+
+function promptCustomer() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "item_id",
+            message: "Please select the item id of the item you would like to purchase:"
+        },
+        {
+            type: "input",
+            name: "quantity",
+            message: "How many would you like to purchase?"
+        }
+    ]).then(function(data){
+        console.log(data.item_id, data.quantity);
+    });
+};
