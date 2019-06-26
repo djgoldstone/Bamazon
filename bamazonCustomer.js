@@ -38,7 +38,7 @@ function runProgram() {
     inquirer.prompt({
         name: "action",
         type: "list",
-        message: "Welcome to Bamazon how can we help you?",
+        message: chalk.greenBright("Welcome to Bamazon how can we help you?"),
         choices: [
             "Make a purchase",
             "Exit"
@@ -59,16 +59,35 @@ function promptCustomer() {
         {
             type: "input",
             name: "item_id",
-            message: "Please select the item id of the item you would like to purchase: "
+            message: "Please select the item id of the item you would like to purchase: ",
+            validate: function(value) {
+                if (isNaN(value) === false) {
+                    return true;
+                }
+                return false;
+            }
         },
         {
             type: "input",
             name: "quantity",
-            message: "How many would you like to purchase?"
+            message: "How many would you like to purchase?",
+            validate: function(value) {
+                if (isNaN(value) === false) {
+                    return true;
+                }
+                return false;
+            }
         }
     ]).then(function(data){
         // console.log(data.item_id, data.quantity);
-        fulfillPurchase(data.item_id, data.quantity);
+        if (data.item_id <= 10 && data.item_id > 0) {
+            fulfillPurchase(data.item_id, data.quantity);
+        } else {
+            console.log(chalk.bold.greenBright("----------------------------------------------"));
+            console.log(chalk.bold.greenBright("That item id does not exist, please try again!"));
+            console.log(chalk.bold.greenBright("----------------------------------------------"));
+            runProgram();
+        }
     });
 };
 
