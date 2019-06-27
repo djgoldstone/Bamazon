@@ -47,7 +47,7 @@ function runProgram() {
             promptCustomer();
         } else if (answer.action === "Exit") {
             console.log(chalk.greenBright("----------------------"));
-            console.log(chalk.bold.greenBright("Thank you, come Again!"));
+            console.log(chalk.bold.greenBright("Thank you, come again!"));
             console.log(chalk.greenBright("----------------------"));
             connection.end();
         }
@@ -83,23 +83,49 @@ function promptCustomer() {
         if (data.item_id <= 10 && data.item_id > 0) {
             fulfillPurchase(data.item_id, data.quantity);
         } else {
-            console.log(chalk.bold.greenBright("----------------------------------------------"));
-            console.log(chalk.bold.greenBright("That item id does not exist, please try again!"));
-            console.log(chalk.bold.greenBright("----------------------------------------------"));
+            console.log(chalk.greenBright("----------------------------------------------"));
+            console.log(chalk.greenBright("That item id does not exist, please try again!"));
+            console.log(chalk.greenBright("----------------------------------------------"));
             runProgram();
         }
     });
 };
 
+// function fulfillPurchase(id, amount) {
+//     connection.query("UPDATE products SET stock_quantity = stock_quantity - ? WHERE item_id = ?", 
+//     [amount,id],
+//     (err) => {
+//         if (err) {
+//             console.log(err);
+//         } else {
+//             console.log(chalk.greenBright("--------------------"));
+//             console.log(chalk.greenBright("Purchase Successful!"));
+//             console.log(chalk.greenBright("--------------------"));
+//             inventory();
+//         } 
+//     });
+// };
+
 function fulfillPurchase(id, amount) {
-    connection.query("UPDATE products SET stock_quantity = stock_quantity - ? WHERE item_id = ?", 
-    [amount,id],
-    (err) => {
-        if (err) {
+    connection.query("SELECT * FROM products WHERE item_id = " + id, function(err,res){
+        if (err){
             console.log(err);
+        }
+        if (amount <= res[0].stock_quantity) {
+            console.log(chalk.greenBright("--------------------"));
+            console.log(chalk.bold.greenBright("Purchase Successful!"));
+            console.log(chalk.greenBright("--------------------"));
+            var customerCost = (res[0].price * amount).toFixed(2);
+            console.log(chalk.greenBright("--------------------------------------------------------------------------------------------------"));
+            console.log(chalk.bold.greenBright("Your total cost for " + amount + " " + res[0].product_name + " is $" + customerCost + ", thank you!"));
+            console.log(chalk.greenBright("--------------------------------------------------------------------------------------------------"));
+
+            connection.query("UPDATE products SET stock_quantity = stock_quantity - ? WHERE item_id = ?", [amount, id]);
+            inventory();
         } else {
-            console.log("Purchase Successful!");
-            console.log("--------------------")
+            console.log(chalk.greenBright("-------------------------------------"));
+            console.log(chalk.bold.greenBright("Insufficient stock, please try again!"));
+            console.log(chalk.greenBright("-------------------------------------"));
             inventory();
         }
     });
