@@ -41,6 +41,7 @@ function runProgram() {
                 restock();
                 break;
             case "Add New product":
+                newProduct();
                 break;
             case "Exit":
                     console.log(chalk.greenBright("----------------------"));
@@ -100,9 +101,48 @@ function addInventory(id, amount) {
         } else {
             connection.query("UPDATE products SET stock_quantity = stock_quantity + ? WHERE item_id = ?", [amount, id]);
             console.log(chalk.greenBright("-----------------------------------------"));
-            console.log(chalk.greenBright("You added " + amount + " units to item_id " + id));
+            console.log(chalk.bold.greenBright("You added " + amount + " units to item_id " + id));
             console.log(chalk.greenBright("-----------------------------------------"));
             inventory();
         }
     });
+};
+
+function newProduct() {
+    inquirer.prompt([
+        {
+            name: "Name",
+            type: "input",
+            message: "What is the name of the new product?"
+        },
+        {
+            name: "Category",
+            type: "input",
+            message: "What is the category of the new product?"
+        },
+        {
+            name: "Price",
+            type: "input",
+            message: "What is the price of the new product?"
+        },
+        {
+            name: "Quantity",
+            type: "input",
+            message: "What is the quantity?"
+        }
+    ]).then(function(answer) {
+        var name = answer.Name;
+        var category = answer.Category;
+        var price = answer.Price;
+        var quantity = answer.Quantity;
+        addNewProduct(name,category,price,quantity);
+    });
+};
+
+function addNewProduct(name,category,price,quantity) {
+    connection.query("INSERT INTO products (product_name,department_name,price,stock_quantity) VALUES(?,?,?,?);", [name, category, price, quantity]);
+    console.log(chalk.greenBright("---------------"));
+    console.log(chalk.bold.greenBright("New item added!"));
+    console.log(chalk.greenBright("---------------"));
+    inventory();
 };
