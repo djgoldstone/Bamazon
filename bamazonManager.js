@@ -36,6 +36,7 @@ function runProgram() {
                 inventory();
                 break;
             case "View low inventory":
+                lowInventory();
                 break;
             case "Add to inventory":
                 break;
@@ -62,3 +63,13 @@ function inventory() {
     });
 };
 
+function lowInventory() {
+    connection.query("SELECT * FROM products WHERE stock_quantity < 5", function (err, res) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.table(res);
+        };
+        runProgram();
+    });
+};
