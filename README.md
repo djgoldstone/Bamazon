@@ -27,7 +27,7 @@ ___
 ![Graph](images/graph.png)
 ___
 
-![Bamazon screenshot](images/xxx-screenshot.png)
+![Bamazon screenshot](images/bamazon-screenshot.png)
 
 
 
