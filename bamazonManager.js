@@ -16,7 +16,6 @@ connection.connect((err)=>{
         console.log(err);
     }
     runProgram();
-    //callback function that displays current inventory stored in database
 });
 
 function runProgram() {
@@ -39,6 +38,7 @@ function runProgram() {
                 lowInventory();
                 break;
             case "Add to inventory":
+                restock();
                 break;
             case "Add New product":
                 break;
@@ -71,5 +71,38 @@ function lowInventory() {
             console.table(res);
         };
         runProgram();
+    });
+};
+
+function restock() {
+    inquirer.prompt([
+        {
+            name: "ID",
+            type: "input",
+            message: "Which item_id would you like to restock?"
+        },
+        {
+            name: "Quantity",
+            type: "input",
+            message: "How many would you like to add to stock_quantity?"
+        }
+    ]).then(function(answer) {
+        var quantity = answer.Quantity;
+        var itemID = answer.ID;
+        addInventory(itemID, quantity);
+    });
+};
+
+function addInventory(id, amount) {
+    connection.query("SELECT * FROM products WHERE item_id = " + id, function(err, res) {
+        if (err) {
+            console.log(err);
+        } else {
+            connection.query("UPDATE products SET stock_quantity = stock_quantity + ? WHERE item_id = ?", [amount, id]);
+            console.log(chalk.greenBright("-----------------------------------------"));
+            console.log(chalk.greenBright("You added " + amount + " units to item_id " + id));
+            console.log(chalk.greenBright("-----------------------------------------"));
+            inventory();
+        }
     });
 };
