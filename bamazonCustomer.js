@@ -80,7 +80,7 @@ function promptCustomer() {
         }
     ]).then(function(data){
         // console.log(data.item_id, data.quantity);
-        if (data.item_id <= 10 && data.item_id > 0) {
+        if (data.item_id <= 100 && data.item_id > 0) {
             fulfillPurchase(data.item_id, data.quantity);
         } else {
             console.log(chalk.greenBright("----------------------------------------------"));
@@ -111,7 +111,7 @@ function fulfillPurchase(id, amount) {
         if (err){
             console.log(err);
         }
-        if (amount <= res[0].stock_quantity) {
+        if (id <= res[0].item_id.length +1 && amount <= res[0].stock_quantity) {
             console.log(chalk.greenBright("--------------------"));
             console.log(chalk.bold.greenBright("Purchase Successful!"));
             console.log(chalk.greenBright("--------------------"));
